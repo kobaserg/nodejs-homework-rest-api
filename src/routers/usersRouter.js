@@ -19,7 +19,7 @@ const { userTokenMiddleware } = require("../middlewares/userMiddleware");
 
 const {
   userValidation,
-  userSubsciptoinValidation,
+  userSubsciptionValidation,
 } = require("../middlewares/validationMiddleware");
 
 router.post("/signup", userValidation, asyncWrapper(userSignupController));
@@ -41,7 +41,7 @@ router.get(
 router.patch(
   "/",
 
-  userSubsciptoinValidation,
+  userSubsciptionValidation,
   asyncWrapper(userSubscriptionController)
 );
 

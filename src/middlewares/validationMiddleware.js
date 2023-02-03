@@ -1,7 +1,7 @@
 const Joi = require("joi");
 
 module.exports = {
-  userSubsciptoinValidation: (req, res, next) => {
+  userSubsciptionValidation: (req, res, next) => {
     const { subscription } = req.body;
     const schema = Joi.object({
       subscription: Joi.string().valid("starter", "pro", "business").required(),
