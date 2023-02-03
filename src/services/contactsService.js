@@ -53,10 +53,9 @@ const addContact = async (req) => {
   return newContact;
 };
 
-const updateContact = async (req) => {
-  const { id } = req.params;
-  const { _id: owner } = req.user;
-  const { name, email, phone } = req.body;
+const updateContact = async (id, body, user) => {
+  const { _id: owner } = user;
+  const { name, email, phone } = body;
   const searchContact = await Contacts.findOneAndUpdate(
     { _id: id, owner },
     { name, email, phone },

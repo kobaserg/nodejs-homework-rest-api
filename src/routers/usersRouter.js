@@ -40,7 +40,7 @@ router.get(
 
 router.patch(
   "/",
-
+  userTokenMiddleware,
   userSubsciptionValidation,
   asyncWrapper(userSubscriptionController)
 );

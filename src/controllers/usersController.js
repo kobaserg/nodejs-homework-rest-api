@@ -9,20 +9,21 @@ const userSignupController = async (req, res, next) => {
       subscription: user.subscription,
     },
 
-    status: `Signup with email : ${email} and password : ${password} successfully`,
+    status: `Signup with email : ${email} successfully`,
   });
 };
 
 const userLoginController = async (req, res, next) => {
   const { email, password } = req.body;
-  const token = await serviceUsers.userLogin(email, password);
+  const { token, user } = await serviceUsers.userLogin(email, password);
+  const id = user._id;
   res.status(200).json({
     token,
     user: {
+      id,
       email,
-      password,
     },
-    status: `Login for email : '${email}' and password : '${password}' successfully`,
+    status: `Login for email : '${email}'  successfully`,
   });
 };
 
@@ -35,14 +36,20 @@ const userLogoutController = async (req, res, next) => {
 };
 
 const getUserContactsController = async (req, res, next) => {
-  const token = req.token;
-  const user = await serviceUsers.currentUser(token);
-  res.status(200).json({ user, status: "Current user successfully" });
+  const user = req.user;
+  const token = user.token;
+  const email = user.email;
+
+  res.status(200).json({ email, token, status: "Current user successfully" });
 };
 
 const userSubscriptionController = async (req, res, next) => {
-  const user = await serviceUsers.userSubsciption(req);
-  const { email, subscription } = user;
+  const { subscription } = req.body;
+  const user = req.user;
+  const token = user.token;
+  const email = user.email;
+  await serviceUsers.userSubsciption(token, subscription);
+
   res.status(200).json({
     email,
     subscription,

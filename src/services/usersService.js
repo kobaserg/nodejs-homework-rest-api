@@ -32,7 +32,7 @@ const userLogin = async (email, password) => {
     process.env.JWT_SECRET
   );
   await user.update({ token });
-  return token;
+  return { token, user };
 };
 
 const userLogout = async (id) => {
@@ -44,26 +44,9 @@ const userLogout = async (id) => {
   return await user.update({ token: null });
 };
 
-const currentUser = async (token) => {
-  const user = await Users.findOne({ token });
-  if (!user) {
-    throw new NotAuthorizedError(`User  not found`);
-  }
-
-  return user;
-};
-
-const userSubsciption = async (req) => {
-  const { email, password, subscription } = req.body;
-  const user = await Users.findOne({ email });
-  if (!user) {
-    throw new NotAuthorizedError(`User with email: '${email}' not found`);
-  }
-  if (!(await bcrypt.compare(password, user.password))) {
-    throw new NotAuthorizedError(`Wrong password: '${password}' `);
-  }
+const userSubsciption = async (token, subscription) => {
   const updateUserSubscrip = await Users.findOneAndUpdate(
-    { email: email },
+    { token: token },
     { $set: { subscription } }
   );
   return updateUserSubscrip;
@@ -73,6 +56,5 @@ module.exports = {
   userSignup,
   userLogin,
   userLogout,
-  currentUser,
   userSubsciption,
 };
