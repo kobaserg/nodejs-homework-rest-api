@@ -16,6 +16,10 @@ const {
   favoriteContactController,
 } = require("../controllers/contactsController");
 
+const { userTokenMiddleware } = require("../middlewares/userMiddleware");
+
+router.use(userTokenMiddleware);
+
 router.get("/", asyncWrapper(listContactsController));
 
 router.get("/:id", asyncWrapper(getContactByIdController));
