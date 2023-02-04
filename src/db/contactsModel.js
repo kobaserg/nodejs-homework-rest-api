@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Users = require("./usersModel");
 
 const contactsSchema = new mongoose.Schema(
   {
@@ -16,8 +17,17 @@ const contactsSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      require: true,
+    },
   },
-  { versionKey: false, timestamps: true }
+
+  {
+    versionKey: false,
+    timestamps: true,
+  }
 );
 
 const Contacts = mongoose.model("contacts", contactsSchema);

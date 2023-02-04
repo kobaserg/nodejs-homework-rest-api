@@ -7,50 +7,75 @@ const verifyErrorById = (id, found) => {
   }
 };
 
-const listContacts = async () => {
-  return await Contacts.find();
+const listContacts = async (req) => {
+  const { _id: owner } = req.user;
+  let { page, limit, favorite } = req.query;
+
+  if (!favorite) {
+    favorite = { $in: [true, false] };
+  }
+
+  const skip = (page - 1) * limit;
+  const contacts = await Contacts.find(
+    { owner, favorite },
+    "-createdAt -updatedAt ",
+    {
+      skip,
+      limit,
+    }
+  ).populate("owner", " email");
+  return { contacts, page, limit };
 };
 
-const getContactById = async (contactId) => {
-  const contact = await Contacts.findById({ _id: contactId });
-  verifyErrorById(contactId, contact);
+const getContactById = async (req) => {
+  const { id } = req.params;
+  const { _id: owner } = req.user;
+
+  const contact = await Contacts.findOne({ _id: id, owner });
+  verifyErrorById(id, contact);
 
   return contact;
 };
 
-const removeContact = async (contactId) => {
-  const contact = await Contacts.findByIdAndDelete({ _id: contactId });
-  verifyErrorById(contactId, contact);
+const removeContact = async (req) => {
+  const { id } = req.params;
+  const { _id: owner } = req.user;
+  const contact = await Contacts.findOneAndRemove({ _id: id, owner });
+  verifyErrorById(id, contact);
   return contact;
 };
 
-const addContact = async (body) => {
-  const { name, email, phone } = body;
-  const newContact = new Contacts({ name, email, phone });
+const addContact = async (req) => {
+  const { _id: owner } = req.user;
+  const newContact = new Contacts({ ...req.body, owner });
+
   await newContact.save();
   return newContact;
 };
 
-const updateContact = async (contactId, body) => {
+const updateContact = async (id, body, user) => {
+  const { _id: owner } = user;
   const { name, email, phone } = body;
-  const searchContact = await Contacts.findByIdAndUpdate(
-    { _id: contactId },
+  const searchContact = await Contacts.findOneAndUpdate(
+    { _id: id, owner },
     { name, email, phone },
     { new: true }
   );
-  verifyErrorById(contactId, searchContact);
+  verifyErrorById(id, searchContact);
 
   return searchContact;
 };
 
-const favoriteContact = async (contactId, body) => {
-  const { favorite } = body;
-  const searchContact = await Contacts.findByIdAndUpdate(
-    { _id: contactId },
+const favoriteContact = async (req) => {
+  const { id } = req.params;
+  const { _id: owner } = req.user;
+  const { favorite } = req.body;
+  const searchContact = await Contacts.findOneAndUpdate(
+    { _id: id, owner },
     { $set: { favorite } }
   );
 
-  verifyErrorById(contactId, searchContact);
+  verifyErrorById(id, searchContact);
 
   return searchContact;
 };

@@ -1,0 +1,43 @@
+const express = require("express");
+const router = express.Router();
+
+const { asyncWrapper } = require("../helpers/apiHelpers");
+const {
+  userSignupController,
+  userLoginController,
+  userLogoutController,
+  getUserContactsController,
+  userSubscriptionController,
+} = require("../controllers/usersController");
+
+const { userTokenMiddleware } = require("../middlewares/userMiddleware");
+
+const {
+  userValidation,
+  userSubsciptionValidation,
+} = require("../middlewares/validationMiddleware");
+
+router.post("/signup", userValidation, asyncWrapper(userSignupController));
+
+router.post("/login", userValidation, asyncWrapper(userLoginController));
+
+router.get(
+  "/logout/:id",
+  userTokenMiddleware,
+  asyncWrapper(userLogoutController)
+);
+
+router.get(
+  "/current",
+  userTokenMiddleware,
+  asyncWrapper(getUserContactsController)
+);
+
+router.patch(
+  "/",
+  userTokenMiddleware,
+  userSubsciptionValidation,
+  asyncWrapper(userSubscriptionController)
+);
+
+module.exports = { usersRouter: router };
