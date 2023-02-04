@@ -37,18 +37,19 @@ const userLogoutController = async (req, res, next) => {
 
 const getUserContactsController = async (req, res, next) => {
   const user = req.user;
-  const token = user.token;
   const email = user.email;
+  const subscription = user.subscription;
 
-  res.status(200).json({ email, token, status: "Current user successfully" });
+  res
+    .status(200)
+    .json({ email, subscription, status: "Current user successfully" });
 };
 
 const userSubscriptionController = async (req, res, next) => {
   const { subscription } = req.body;
   const user = req.user;
-  const token = user.token;
   const email = user.email;
-  await serviceUsers.userSubsciption(token, subscription);
+  await serviceUsers.userSubsciption(email, subscription);
 
   res.status(200).json({
     email,

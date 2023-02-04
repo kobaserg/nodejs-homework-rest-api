@@ -44,9 +44,9 @@ const userLogout = async (id) => {
   return await user.update({ token: null });
 };
 
-const userSubsciption = async (token, subscription) => {
+const userSubsciption = async (email, subscription) => {
   const updateUserSubscrip = await Users.findOneAndUpdate(
-    { token: token },
+    { email: email },
     { $set: { subscription } }
   );
   return updateUserSubscrip;

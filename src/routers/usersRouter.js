@@ -1,11 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-// const {
-//   contactsValidation,
-//   favoriteValidation,
-// } = require("../middlewares/validationMiddleware");
-
 const { asyncWrapper } = require("../helpers/apiHelpers");
 const {
   userSignupController,

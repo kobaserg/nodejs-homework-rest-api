@@ -13,7 +13,7 @@ const getContactByIdController = async (req, res, next) => {
 
 const addContactController = async (req, res, next) => {
   const newContacts = await serviceContact.addContact(req);
-  res.status(201).json({ newContacts });
+  res.status(201).json(newContacts);
 };
 
 const removeContactController = async (req, res, next) => {
