@@ -77,7 +77,7 @@ const favoriteContact = async (req) => {
 
   verifyErrorById(id, searchContact);
 
-  return searchContact;
+  return { id, favorite };
 };
 
 module.exports = {

@@ -8,9 +8,11 @@ const {
   userLogoutController,
   getUserContactsController,
   userSubscriptionController,
+  uploadAvatarController,
 } = require("../controllers/usersController");
 
-const { userTokenMiddleware } = require("../middlewares/userMiddleware");
+const { userTokenMiddleware } = require("../middlewares/authMiddleware");
+const { uploadMiddleware } = require("../middlewares/uploadMiddleware");
 
 const {
   userValidation,
@@ -38,6 +40,13 @@ router.patch(
   userTokenMiddleware,
   userSubsciptionValidation,
   asyncWrapper(userSubscriptionController)
+);
+
+router.patch(
+  "/avatars",
+  userTokenMiddleware,
+  uploadMiddleware.single("avatar"),
+  asyncWrapper(uploadAvatarController)
 );
 
 module.exports = { usersRouter: router };

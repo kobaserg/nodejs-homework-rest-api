@@ -2,11 +2,14 @@ const { Users } = require("../db/usersModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { NotAuthorizedError, ConflictError } = require("../helpers/errors");
+const gravatar = require("gravatar");
 
 const userSignup = async (email, password) => {
+  const avatarURL = gravatar.url(email);
   const user = new Users({
     email,
     password,
+    avatarURL,
   });
 
   if (await Users.findOne({ email })) {
@@ -25,9 +28,13 @@ const userLogin = async (email, password) => {
   if (!(await bcrypt.compare(password, user.password))) {
     throw new NotAuthorizedError(`Wrong password: '${password}' `);
   }
+  console.log(user);
+
   const token = jwt.sign(
     {
       _id: user._id,
+      email: user.email,
+      subscription: user.subscription,
     },
     process.env.JWT_SECRET
   );
