@@ -1,12 +1,12 @@
 const serviceUsers = require("../services/usersService");
 const { v4: uuidv4 } = require("uuid");
 const Jimp = require("jimp");
-const path = require("path");
+// const path = require("path");
 const fs = require("fs").promises;
 
 const { Users } = require("../db/usersModel");
 
-const avatarsDIR = path.resolve("./public/avatars");
+// const avatarsDIR = path.resolve("./public/avatars");
 
 const userSignupController = async (req, res, next) => {
   const { email, password } = req.body;
@@ -68,16 +68,20 @@ const userSubscriptionController = async (req, res, next) => {
 };
 
 const uploadAvatarController = async (req, res) => {
+  console.log(req.file);
   const { path: tmpUpload, originalname } = req.file;
   const [, extension] = originalname.split(".");
 
   const resultName = uuidv4() + "." + extension;
-  const resultUpload = avatarsDIR + "/" + resultName;
-  const avatarURL = path.join("public", "avatars", resultName);
+  // const resultUpload = avatarsDIR + "/" + resultName;
+  // console.log(resultUpload);
+  const avatarURL = "public" + "/avatars/" + resultName;
+
+  console.log(avatarURL);
 
   Jimp.read(tmpUpload, (err, avatar) => {
     if (err) throw err;
-    avatar.resize(250, 250).quality(60).write(resultUpload);
+    avatar.resize(250, 250).quality(60).write(avatarURL);
   });
   if (req.user) {
     const id = req.user._id;

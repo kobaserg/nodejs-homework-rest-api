@@ -20,7 +20,7 @@ const userTokenMiddleware = (req, res, next) => {
     if (!user) {
       next(new NotAuthorizedError("Not authorized"));
     }
-    req.token = token;
+
     req.user = user;
     next();
   } catch (error) {
