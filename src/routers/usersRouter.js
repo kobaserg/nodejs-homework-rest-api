@@ -9,6 +9,7 @@ const {
   getUserContactsController,
   userSubscriptionController,
   uploadAvatarController,
+  avatarImageController,
 } = require("../controllers/usersController");
 
 const { userTokenMiddleware } = require("../middlewares/authMiddleware");
@@ -48,5 +49,7 @@ router.patch(
   uploadMiddleware.single("avatar"),
   asyncWrapper(uploadAvatarController)
 );
+
+router.get("/avatars/:avatar", asyncWrapper(avatarImageController));
 
 module.exports = { usersRouter: router };

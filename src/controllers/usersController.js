@@ -1,12 +1,10 @@
 const serviceUsers = require("../services/usersService");
 const { v4: uuidv4 } = require("uuid");
 const Jimp = require("jimp");
-// const path = require("path");
 const fs = require("fs").promises;
+const PORT = process.env.PORT;
 
 const { Users } = require("../db/usersModel");
-
-// const avatarsDIR = path.resolve("./public/avatars");
 
 const userSignupController = async (req, res, next) => {
   const { email, password } = req.body;
@@ -73,15 +71,15 @@ const uploadAvatarController = async (req, res) => {
   const [, extension] = originalname.split(".");
 
   const resultName = uuidv4() + "." + extension;
-  // const resultUpload = avatarsDIR + "/" + resultName;
-  // console.log(resultUpload);
-  const avatarURL = "public" + "/avatars/" + resultName;
+  const HOST = process.env.SERVERHOST || `http://localhost:${PORT}`;
+  const avatarURL = `${HOST}` + "/avatars/" + resultName;
 
   console.log(avatarURL);
+  const avatarDir = "public" + "/avatars/" + resultName;
 
   Jimp.read(tmpUpload, (err, avatar) => {
     if (err) throw err;
-    avatar.resize(250, 250).quality(60).write(avatarURL);
+    avatar.resize(250, 250).quality(60).write(avatarDir);
   });
   if (req.user) {
     const id = req.user._id;
@@ -92,6 +90,12 @@ const uploadAvatarController = async (req, res) => {
   res.json({ avatarURL, status: "success" });
 };
 
+const avatarImageController = async (req, res) => {
+  const avatar = req.params.avatar;
+
+  res.json({ avatar });
+};
+
 module.exports = {
   userSignupController,
   userLoginController,
@@ -99,4 +103,5 @@ module.exports = {
   getUserContactsController,
   userSubscriptionController,
   uploadAvatarController,
+  avatarImageController,
 };

@@ -6,7 +6,6 @@ require("dotenv").config();
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 const { contactsRouter } = require("./src/routers/contactsRouter");
 const { usersRouter } = require("./src/routers/usersRouter");
-const { avatarsImageRouter } = require("./src/routers/avatarsImageRouter");
 const { errorHandler } = require("./src/helpers/apiHelpers");
 
 app.use(logger(formatsLogger));
@@ -16,7 +15,6 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use("/api/contacts", contactsRouter);
 app.use("/api/users", usersRouter);
-app.use("/avatars", avatarsImageRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found " });
