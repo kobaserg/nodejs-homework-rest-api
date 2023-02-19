@@ -1,4 +1,10 @@
 const serviceUsers = require("../services/usersService");
+const { v4: uuidv4 } = require("uuid");
+const Jimp = require("jimp");
+const fs = require("fs").promises;
+const PORT = process.env.PORT;
+
+const { Users } = require("../db/usersModel");
 
 const userSignupController = async (req, res, next) => {
   const { email, password } = req.body;
@@ -6,6 +12,7 @@ const userSignupController = async (req, res, next) => {
   res.status(201).json({
     user: {
       email: user.email,
+      avatarURL: user.avatarURL,
       subscription: user.subscription,
     },
 
@@ -31,7 +38,7 @@ const userLogoutController = async (req, res, next) => {
   const { id } = req.params;
   await serviceUsers.userLogout(id);
   res.status(204).json({
-    message: `Logout for id : '${id}'  successfully`,
+    status: `Logout for id : '${id}'  successfully`,
   });
 };
 
@@ -58,10 +65,36 @@ const userSubscriptionController = async (req, res, next) => {
   });
 };
 
+const uploadAvatarController = async (req, res) => {
+  console.log(req.file);
+  const { path: tmpUpload, originalname } = req.file;
+  const [, extension] = originalname.split(".");
+
+  const resultName = uuidv4() + "." + extension;
+  const HOST = process.env.SERVERHOST || `http://localhost:${PORT}`;
+  const avatarURL = `${HOST}` + "/avatars/" + resultName;
+
+  console.log(avatarURL);
+  const avatarDir = "public" + "/avatars/" + resultName;
+
+  Jimp.read(tmpUpload, (err, avatar) => {
+    if (err) throw err;
+    avatar.resize(250, 250).quality(60).write(avatarDir);
+  });
+  if (req.user) {
+    const id = req.user._id;
+    await Users.findOneAndUpdate({ _id: id }, { avatarURL });
+    await fs.unlink(tmpUpload);
+  }
+
+  res.json({ avatarURL, status: "success" });
+};
+
 module.exports = {
   userSignupController,
   userLoginController,
   userLogoutController,
   getUserContactsController,
   userSubscriptionController,
+  uploadAvatarController,
 };

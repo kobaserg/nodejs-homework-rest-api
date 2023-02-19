@@ -16,7 +16,7 @@ const {
   favoriteContactController,
 } = require("../controllers/contactsController");
 
-const { userTokenMiddleware } = require("../middlewares/userMiddleware");
+const { userTokenMiddleware } = require("../middlewares/authMiddleware");
 
 router.use(userTokenMiddleware);
 

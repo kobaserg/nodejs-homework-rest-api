@@ -11,6 +11,7 @@ const { errorHandler } = require("./src/helpers/apiHelpers");
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
+app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use("/api/contacts", contactsRouter);
 app.use("/api/users", usersRouter);
