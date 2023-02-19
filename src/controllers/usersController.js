@@ -90,12 +90,6 @@ const uploadAvatarController = async (req, res) => {
   res.json({ avatarURL, status: "success" });
 };
 
-const avatarImageController = async (req, res) => {
-  const avatar = req.params.avatar;
-
-  res.json({ avatar });
-};
-
 module.exports = {
   userSignupController,
   userLoginController,
@@ -103,5 +97,4 @@ module.exports = {
   getUserContactsController,
   userSubscriptionController,
   uploadAvatarController,
-  avatarImageController,
 };

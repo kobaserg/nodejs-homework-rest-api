@@ -50,6 +50,4 @@ router.patch(
   asyncWrapper(uploadAvatarController)
 );
 
-router.get("/avatars/:avatar", asyncWrapper(avatarImageController));
-
 module.exports = { usersRouter: router };
