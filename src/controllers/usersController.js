@@ -20,6 +20,20 @@ const userSignupController = async (req, res, next) => {
   });
 };
 
+const userVerifyController = async (req, res) => {
+  const { verificationToken } = req.params;
+
+  await serviceUsers.userVerify(verificationToken);
+
+  res.json({ status: "Verification successful" });
+};
+
+const userEmailVerifyController = async (req, res) => {
+  const { email } = req.body;
+  await serviceUsers.userEmailVerify(email);
+  res.json({ status: "Verification email sent" });
+};
+
 const userLoginController = async (req, res, next) => {
   const { email, password } = req.body;
   const { token, user } = await serviceUsers.userLogin(email, password);
@@ -66,7 +80,6 @@ const userSubscriptionController = async (req, res, next) => {
 };
 
 const uploadAvatarController = async (req, res) => {
-  console.log(req.file);
   const { path: tmpUpload, originalname } = req.file;
   const [, extension] = originalname.split(".");
 
@@ -74,7 +87,6 @@ const uploadAvatarController = async (req, res) => {
   const HOST = process.env.SERVERHOST || `http://localhost:${PORT}`;
   const avatarURL = `${HOST}` + "/avatars/" + resultName;
 
-  console.log(avatarURL);
   const avatarDir = "public" + "/avatars/" + resultName;
 
   Jimp.read(tmpUpload, (err, avatar) => {
@@ -97,4 +109,6 @@ module.exports = {
   getUserContactsController,
   userSubscriptionController,
   uploadAvatarController,
+  userVerifyController,
+  userEmailVerifyController,
 };
