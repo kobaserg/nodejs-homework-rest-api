@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 jest.setTimeout(15000);
 
-const { connectMongo } = require("../db/connection");
+const { connectMongoTest } = require("../db/connection");
 
 const app = express();
 app.use(express.json());
@@ -22,7 +22,7 @@ const user = {
 describe("test userSignup controller", () => {
   beforeAll(async () => {
     app.listen(3000);
-    connectMongo();
+    connectMongoTest();
     console.log(`Server works at port 3000!`);
   });
   test("userSignup return status 201", async () => {

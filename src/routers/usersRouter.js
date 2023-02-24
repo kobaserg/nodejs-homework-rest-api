@@ -9,7 +9,8 @@ const {
   getUserContactsController,
   userSubscriptionController,
   uploadAvatarController,
-  avatarImageController,
+  userVerifyController,
+  userEmailVerifyController,
 } = require("../controllers/usersController");
 
 const { userTokenMiddleware } = require("../middlewares/authMiddleware");
@@ -18,9 +19,18 @@ const { uploadMiddleware } = require("../middlewares/uploadMiddleware");
 const {
   userValidation,
   userSubsciptionValidation,
+  userEmailValidation,
 } = require("../middlewares/validationMiddleware");
 
 router.post("/signup", userValidation, asyncWrapper(userSignupController));
+
+router.get("/verify/:verificationToken", asyncWrapper(userVerifyController));
+
+router.post(
+  "/verify",
+  userEmailValidation,
+  asyncWrapper(userEmailVerifyController)
+);
 
 router.post("/login", userValidation, asyncWrapper(userLoginController));
 
