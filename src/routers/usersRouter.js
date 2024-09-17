@@ -9,7 +9,6 @@ const {
   getUserContactsController,
   userSubscriptionController,
   uploadAvatarController,
-  avatarImageController,
 } = require("../controllers/usersController");
 
 const { userTokenMiddleware } = require("../middlewares/authMiddleware");
